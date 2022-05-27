@@ -1,0 +1,22 @@
+on:
+  schedule:
+    - cron: ' */45,*/10 * * * 1-5 '
+  workflow_dispatch:
+  
+jobs:
+  update-forks:
+    strategy:
+      matrix:
+        repo-name: ['docs','cpp-docs']
+    runs-on: ubuntu-latest
+    steps:
+      - name: Update forks
+        id: update
+        uses: octokit/request-action@971ad48f9c40ed001c41c2671b1e6e8e8165d5af
+        with:
+          route: POST /repos/{owner}/{repo}/merge-upstream
+          owner: thispsj
+          repo: ${{ matrix.repo-name }}
+          branch: main
+        env:
+          GITHUB_TOKEN: ${{ secrets.APP_TOKEN }}
